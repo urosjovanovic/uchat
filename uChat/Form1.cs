@@ -174,18 +174,32 @@ namespace uChat
 
         public void SetUsername(string name)
         {
-            string text = "-setname#" + name;
-            _clientSocket.Send(Encoding.ASCII.GetBytes(text));
-            Console.WriteLine("Sent: " + text);
-            USERNAME = name;
+            try
+            {
+                string text = "-setname#" + name;
+                _clientSocket.Send(Encoding.ASCII.GetBytes(text));
+                Console.WriteLine("Sent: " + text);
+                USERNAME = name;
+            }
+            catch (SocketException)
+            {
+                Console.WriteLine("Error changing username.");
+            }
         }
 
         public void SetUserColor(Color c)
         {
-            string htmlColor = System.Drawing.ColorTranslator.ToHtml(c);
-            string text = "-setcolor" + htmlColor;
-            _clientSocket.Send(Encoding.ASCII.GetBytes(text));
-            Console.WriteLine("Sent: " + text);
+            try
+            {
+                string htmlColor = System.Drawing.ColorTranslator.ToHtml(c);
+                string text = "-setcolor" + htmlColor;
+                _clientSocket.Send(Encoding.ASCII.GetBytes(text));
+                Console.WriteLine("Sent: " + text);
+            }
+            catch (SocketException)
+            {
+                Console.WriteLine("Error changing user color.");
+            }
         }
 
         //-------------------funkcije za serijalizaciju/deserijalizaciju-----------------
