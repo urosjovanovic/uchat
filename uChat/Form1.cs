@@ -19,14 +19,42 @@ namespace uChat
         private static Socket _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         public const int MAX_CONNECT_ATTEMPTS = 5;
         public string USERNAME;
+        FileStream fs;
+        StreamReader sr;
+        StreamWriter sw;
 
         public Form1()
         {
             InitializeComponent();
-            colorDialog1.Color = Color.Black;
-            colorBox.BackColor = colorDialog1.Color;
             this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
-            
+            colorDialog1.Color = Color.Black;
+            USERNAME = Environment.UserName;
+
+            bool read=false;
+            if(File.Exists("settings.ini"))
+                read = true;
+
+            fs = new FileStream("settings.ini", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            sr = new StreamReader(fs);
+            sw = new StreamWriter(fs);
+
+            if (read)
+            {
+                try
+                {
+                    USERNAME = sr.ReadLine();
+                    colorDialog1.Color = System.Drawing.ColorTranslator.FromHtml(sr.ReadLine());
+                    Console.WriteLine("Settings loaded");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                    MessageBox.Show("Unable to load settings", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+            }
+
+
+            colorBox.BackColor = colorDialog1.Color;
         }
 
         delegate void Invoker(string parameter);
@@ -52,14 +80,14 @@ namespace uChat
         {
             if (chatRichTextBox.InvokeRequired)
             {
-                chatRichTextBox.BeginInvoke(new arrayInvoker(SetRichTextBox),data);
+                chatRichTextBox.BeginInvoke(new arrayInvoker(SetRichTextBox), data);
 
                 return;
             }
 
             //raspakujemo niz bajtova nazad u niz stringova
             string[] msg = new string[3];
-            msg = (string[]) ByteArrayToObject(data);
+            msg = (string[])ByteArrayToObject(data);
 
             chatRichTextBox.SelectionAlignment = HorizontalAlignment.Left;
             chatRichTextBox.SelectionColor = System.Drawing.ColorTranslator.FromHtml(msg[1]);
@@ -68,13 +96,13 @@ namespace uChat
             chatRichTextBox.SelectionAlignment = HorizontalAlignment.Right;
             chatRichTextBox.SelectionColor = Color.Gray;
             chatRichTextBox.SelectedText = DateTime.Now.ToShortTimeString() + Environment.NewLine;
-            
+
             //Autoscroll down
             chatRichTextBox.SelectionStart = chatRichTextBox.Text.Length;
             chatRichTextBox.ScrollToCaret();
 
         }
-            
+
 
         public void LoopConnect()
         {
@@ -112,8 +140,9 @@ namespace uChat
             recieveThread.Name = "recieveloop";
             recieveThread.Start();
 
-            //Postavljamo username
-            SetUsername(Environment.UserName);
+            //Postavljamo username i boju
+            SetUsername(USERNAME);
+            SetUserColor(colorDialog1.Color);
         }
 
         public void RecieveLoop()
@@ -243,6 +272,27 @@ namespace uChat
                 USERNAME = settings.UserName;
                 SetUsername(USERNAME);
             }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            try
+            {
+                Console.WriteLine(USERNAME);
+                fs.Seek(0, SeekOrigin.Begin);
+                sw.WriteLine(USERNAME);
+                sw.WriteLine(System.Drawing.ColorTranslator.ToHtml(colorDialog1.Color));
+                sw.Flush();
+                sw.Close();
+                sr.Close();
+                fs.Close();
+                Console.WriteLine("Settings saved");
+            }
+            catch (IOException)
+            {
+                MessageBox.Show("Unable to save settings", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+
         }
 
     }
