@@ -25,6 +25,7 @@ namespace uChat
             InitializeComponent();
             colorDialog1.Color = Color.Black;
             colorBox.BackColor = colorDialog1.Color;
+            this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
             
         }
 
@@ -93,11 +94,13 @@ namespace uChat
 
                 if (attempts >= MAX_CONNECT_ATTEMPTS)
                 {
-                    MessageBox.Show("Unable to connect to server.",
+                    MessageBox.Show(
+                                    "Unable to connect to server.",
                                     "Error",
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Exclamation,
-                                    MessageBoxDefaultButton.Button1);
+                                    MessageBoxDefaultButton.Button1,
+                                    MessageBoxOptions.DefaultDesktopOnly);
                     SetTitleSafe("Failed to connect.");
                     return;
                 }
