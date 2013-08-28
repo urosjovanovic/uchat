@@ -27,7 +27,7 @@ namespace ServerApp
         private static void SetupServer()
         {
             Console.WriteLine("Setting up server...");
-            _serverSocket.Bind(new IPEndPoint(IPAddress.Any, 100));
+            _serverSocket.Bind(new IPEndPoint(IPAddress.Any, 9999));
             _serverSocket.Listen(5);
             _serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
             Console.WriteLine("---Server Online---");
@@ -82,9 +82,11 @@ namespace ServerApp
             }
             catch (SocketException)
             {
+                string name = _clients[current][0]; //cuvamo ime korisnika koji je iskljucen
                 Console.WriteLine("Client forcefully disconnected");
                 current.Close(); // Dont shutdown because the socket may be disposed and its disconnected anyway
                 _clients.Remove(current);
+                SendToAll(name + " disconnected.", "Gray");//saljemo info svim ostalim korisnicima
                 return;
             }
 
@@ -101,8 +103,10 @@ namespace ServerApp
                 {
                     string oldname = _clients[current][0];
                     _clients[current][0] = name;
-                    if(oldname != "DefaultName")
-                    SendToAll(oldname + " changed name to " + name, "Gray");
+                    if (oldname != "DefaultName")
+                        SendToAll(oldname + " changed name to " + name, "Gray");
+                    else
+                        SendToAll(name + " connected.","Gray");
                 }
 
                 else

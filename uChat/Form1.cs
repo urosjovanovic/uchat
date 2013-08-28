@@ -113,7 +113,7 @@ namespace uChat
                 try
                 {
                     attempts++;
-                    _clientSocket.Connect(IPAddress.Loopback, 100);
+                    _clientSocket.Connect(IPAddress.Parse("127.0.0.1"), 9999);
                 }
                 catch (SocketException)
                 {
