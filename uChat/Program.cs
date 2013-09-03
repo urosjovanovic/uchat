@@ -17,10 +17,6 @@ namespace uChat
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Form1 f = new Form1();
-            Thread connectThread = new Thread(f.LoopConnect);
-            connectThread.IsBackground = true;
-            connectThread.Name = "connect";
-            connectThread.Start();
             Application.Run(f);
         }
     }

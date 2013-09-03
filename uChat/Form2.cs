@@ -22,6 +22,12 @@ namespace uChat
          set { textBox1.Text = value; }
         }
 
+        public string ServerIp
+        {
+            get { return textBox2.Text; }
+            set { textBox2.Text = value; }
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             if (textBox1.Text == "")
@@ -31,6 +37,7 @@ namespace uChat
             }
             else
                 button1.DialogResult = DialogResult.OK;
+
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)

@@ -19,6 +19,7 @@ namespace uChat
         private static Socket _clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         public const int MAX_CONNECT_ATTEMPTS = 5;
         public string USERNAME;
+        public string SERVERIP;
         FileStream fs;
         StreamReader sr;
         StreamWriter sw;
@@ -44,6 +45,7 @@ namespace uChat
                 {
                     USERNAME = sr.ReadLine();
                     colorDialog1.Color = System.Drawing.ColorTranslator.FromHtml(sr.ReadLine());
+                    SERVERIP = sr.ReadLine();
                     Console.WriteLine("Settings loaded");
                 }
                 catch (Exception e)
@@ -52,9 +54,19 @@ namespace uChat
                     MessageBox.Show("Unable to load settings", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
             }
-
+            else
+            {
+                EventArgs e = new EventArgs();
+                settingsPanel_Click(this, e);
+            }
 
             colorBox.BackColor = colorDialog1.Color;
+
+            //KONEKTOVANJE NA SERVER (pozadinski thread)
+            Thread connectThread = new Thread(LoopConnect);
+            connectThread.IsBackground = true;
+            connectThread.Name = "connect";
+            connectThread.Start();
         }
 
         delegate void Invoker(string parameter);
@@ -113,7 +125,23 @@ namespace uChat
                 try
                 {
                     attempts++;
-                    _clientSocket.Connect(IPAddress.Parse("127.0.0.1"), 9999);
+                    if(SERVERIP != null)
+                        try
+                        {
+                            _clientSocket.Connect(IPAddress.Parse(SERVERIP), 9999);
+                        }
+                        catch (FormatException)
+                        {
+                            MessageBox.Show("Incorect IPv4 address format", "Error", 
+                                            MessageBoxButtons.OK, 
+                                            MessageBoxIcon.Error, 
+                                            MessageBoxDefaultButton.Button1,
+                                            MessageBoxOptions.DefaultDesktopOnly);
+                            attempts = MAX_CONNECT_ATTEMPTS;
+                            
+                        }
+                    else //ukoliko server ip nije zadat eksplicitno, radimo u lokalu
+                        _clientSocket.Connect(IPAddress.Loopback, 9999);
                 }
                 catch (SocketException)
                 {
@@ -262,16 +290,22 @@ namespace uChat
             MessageBox.Show("uChat beta.\nBy Uros Jovanovic", "About");
         }
 
-        private void panel1_Click(object sender, EventArgs e)
+        private void settingsPanel_Click(object sender, EventArgs e)
         {
             Form2 settings = new Form2();
             settings.UserName = USERNAME;
+            settings.ServerIp = SERVERIP;
             DialogResult dr = settings.ShowDialog();
+
+            //ukoliko je sve proslo OK i username je zapravo promenjen, azuriramo info
             if (dr == DialogResult.OK && USERNAME != settings.UserName)
             {
                 USERNAME = settings.UserName;
                 SetUsername(USERNAME);
             }
+
+            //uzimamo novi serverIP
+            SERVERIP = settings.ServerIp;
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -282,6 +316,7 @@ namespace uChat
                 fs.Seek(0, SeekOrigin.Begin);
                 sw.WriteLine(USERNAME);
                 sw.WriteLine(System.Drawing.ColorTranslator.ToHtml(colorDialog1.Color));
+                sw.WriteLine(SERVERIP);
                 sw.Flush();
                 sw.Close();
                 sr.Close();

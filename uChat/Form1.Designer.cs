@@ -35,7 +35,7 @@
             this.chatRichTextBox = new System.Windows.Forms.RichTextBox();
             this.colorBox = new System.Windows.Forms.Panel();
             this.aboutPanel = new System.Windows.Forms.Panel();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.settingsPanel = new System.Windows.Forms.Panel();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1.SuspendLayout();
@@ -52,7 +52,7 @@
             this.tableLayoutPanel1.Controls.Add(this.chatRichTextBox, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.colorBox, 2, 2);
             this.tableLayoutPanel1.Controls.Add(this.aboutPanel, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.panel1, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.settingsPanel, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -128,20 +128,20 @@
             this.toolTip1.SetToolTip(this.aboutPanel, "About");
             this.aboutPanel.Click += new System.EventHandler(this.aboutPanel_Click);
             // 
-            // panel1
+            // settingsPanel
             // 
-            this.panel1.BackgroundImage = global::uChat.Properties.Resources.settings;
-            this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.panel1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(360, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(0, 0, 4, 4);
-            this.panel1.Name = "panel1";
-            this.panel1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.panel1.Size = new System.Drawing.Size(16, 16);
-            this.panel1.TabIndex = 5;
-            this.toolTip1.SetToolTip(this.panel1, "Settings");
-            this.panel1.Click += new System.EventHandler(this.panel1_Click);
+            this.settingsPanel.BackgroundImage = global::uChat.Properties.Resources.settings;
+            this.settingsPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.settingsPanel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.settingsPanel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.settingsPanel.Location = new System.Drawing.Point(360, 0);
+            this.settingsPanel.Margin = new System.Windows.Forms.Padding(0, 0, 4, 4);
+            this.settingsPanel.Name = "settingsPanel";
+            this.settingsPanel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.settingsPanel.Size = new System.Drawing.Size(16, 16);
+            this.settingsPanel.TabIndex = 5;
+            this.toolTip1.SetToolTip(this.settingsPanel, "Settings");
+            this.settingsPanel.Click += new System.EventHandler(this.settingsPanel_Click);
             // 
             // Form1
             // 
@@ -169,7 +169,7 @@
         private System.Windows.Forms.Panel colorBox;
         private System.Windows.Forms.Panel aboutPanel;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel settingsPanel;
 
     }
 }
